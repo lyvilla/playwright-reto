@@ -1,6 +1,6 @@
 import {test} from '@playwright/test';
 
-test('login sauce demo', async ({page}) => {
+test('"login sauce demo"', async ({page}) => {
 
    await page.goto('https://www.saucedemo.com/');
 
