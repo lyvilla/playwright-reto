@@ -1,7 +1,9 @@
 import {test, expect} from '@playwright/test';
+
 test.beforeEach(async ({ page }) => {
   await page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
 });
+
 test('navegación entre páginas', async ({page}) => {
 
     await page.getByRole('textbox', {name: 'Username'}).fill('Admin')
@@ -39,6 +41,35 @@ test('navegación entre páginas', async ({page}) => {
 
     expect(currentMenuItems).toEqual(ExpectMenuItems);
     expect(currentMenuItems[0]).toBe('Admin');
+
+    await expect(page).toHaveURL(/.*dashboard/)
+
+})
+
+test('Navegación dando click una a una', async ({page}) => {
+    await page.getByRole('textbox', {name: 'Username'}).fill('Admin')
+    await page.getByRole('textbox', {name: 'Password'}).fill('admin123')
+    await page.getByRole('button', {name: 'Login'}).click(); 
+
+    await expect(page.getByRole('link', {name:'Admin'})).toBeVisible()
+    const leftMenuItems = await page.getByLabel('Sidepanel').getByRole('listitem')
+    const currentMenuItemsCount = await leftMenuItems.count();
+
+    for(let i=0; i<currentMenuItemsCount; i++){
+        const menuItem = leftMenuItems.nth(i)
+        const menuText = await menuItem.innerText();
+
+        console.log('Navegando a la página: ', menuText);
+
+         await menuItem.click();
+
+        if (menuText === 'Maintenance'){
+            await page.goBack();
+            continue;
+        }
+       
+   
+    }
 })
 
 
